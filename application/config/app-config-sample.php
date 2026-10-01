@@ -17,7 +17,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 * environments.
 *
 */
-define('APP_BASE_URL', getenv('APP_BASE_URL') ?: 'https://crm.supportzone.ae/');
+define('APP_BASE_URL', getenv('APP_BASE_URL') ?: (isset($_SERVER['APP_BASE_URL']) ? $_SERVER['APP_BASE_URL'] : 'https://crm.supportzone.ae/'));
 
 /*
 * --------------------------------------------------------------------------
@@ -29,29 +29,29 @@ define('APP_BASE_URL', getenv('APP_BASE_URL') ?: 'https://crm.supportzone.ae/');
 * See the user guide for more info.
 *
 * http://codeigniter.com/user_guide/libraries/encryption.html
-*
-define('APP_ENC_KEY', getenv('APP_ENC_KEY') ?: '');
+*/
+define('APP_ENC_KEY', getenv('APP_ENC_KEY') ?: (isset($_SERVER['APP_ENC_KEY']) ? $_SERVER['APP_ENC_KEY'] : ''));
 
 /**
  * Database Credentials
  * The hostname of your database server
  */
-define('APP_DB_HOSTNAME', getenv('DB_HOST') ?: 'db');
+define('APP_DB_HOSTNAME', getenv('DB_HOST') ?: (isset($_SERVER['DB_HOST']) ? $_SERVER['DB_HOST'] : 'db'));
 
 /**
  * The username used to connect to the database
  */
-define('APP_DB_USERNAME', getenv('DB_USER') ?: 'perfex');
+define('APP_DB_USERNAME', getenv('DB_USER') ?: (isset($_SERVER['DB_USER']) ? $_SERVER['DB_USER'] : 'perfex'));
 
 /**
  * The password used to connect to the database
  */
-define('APP_DB_PASSWORD', getenv('DB_PASS') ?: '');
+define('APP_DB_PASSWORD', getenv('DB_PASS') ?: (isset($_SERVER['DB_PASS']) ? $_SERVER['DB_PASS'] : ''));
 
 /**
  * The name of the database you want to connect to
  */
-define('APP_DB_NAME', getenv('DB_NAME') ?: 'perfex_db');
+define('APP_DB_NAME', getenv('DB_NAME') ?: (isset($_SERVER['DB_NAME']) ? $_SERVER['DB_NAME'] : 'perfex_db'));
 
 /**
  * @since  2.3.0
