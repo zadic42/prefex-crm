@@ -8,6 +8,9 @@ services:
 
     restart: unless-stopped
 
+    volumes:
+      - perfex-app-config:/var/www/html/application/config/app-config.php
+
     environment:
       DB_HOST: db
       DB_USER: perfex
@@ -19,6 +22,24 @@ services:
 
     networks:
       - perfex-net
+      - dokploy-network
+      - default
+
+    labels:
+      - traefik.http.routers.perfex-crm-fi0xyz-2-web.rule=Host(`crm.supportzone.ae`)
+      - traefik.http.routers.perfex-crm-fi0xyz-2-web.entrypoints=web
+      - traefik.http.services.perfex-crm-fi0xyz-2-web.loadbalancer.server.port=80
+      - traefik.http.routers.perfex-crm-fi0xyz-2-web.service=perfex-crm-fi0xyz-2-web
+      - traefik.http.routers.perfex-crm-fi0xyz-2-web.middlewares=redirect-to-https@file
+
+      - traefik.http.routers.perfex-crm-fi0xyz-2-websecure.rule=Host(`crm.supportzone.ae`)
+      - traefik.http.routers.perfex-crm-fi0xyz-2-websecure.entrypoints=websecure
+      - traefik.http.services.perfex-crm-fi0xyz-2-websecure.loadbalancer.server.port=80
+      - traefik.http.routers.perfex-crm-fi0xyz-2-websecure.service=perfex-crm-fi0xyz-2-websecure
+      - traefik.http.routers.perfex-crm-fi0xyz-2-websecure.tls.certresolver=letsencrypt
+
+      - traefik.docker.network=dokploy-network
+      - traefik.enable=true
 
   db:
     image: mariadb:10.11
@@ -40,7 +61,13 @@ services:
 volumes:
   db_data:
 
+  perfex-app-config:
+    external: true
+
 networks:
   perfex-net:
     driver: overlay
     attachable: true
+
+  dokploy-network:
+    external: true
