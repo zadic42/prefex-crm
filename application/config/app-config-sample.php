@@ -30,9 +30,7 @@ define('APP_BASE_URL', getenv('APP_BASE_URL') ?: 'https://crm.supportzone.ae/');
 *
 * http://codeigniter.com/user_guide/libraries/encryption.html
 *
-* Auto added on install
-*/
-define('APP_ENC_KEY', getenv('APP_ENC_KEY') ?: 'some_default_encryption_key_123');
+define('APP_ENC_KEY', getenv('APP_ENC_KEY') ?: '');
 
 /**
  * Database Credentials
