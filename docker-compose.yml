@@ -8,8 +8,7 @@ services:
 
     restart: unless-stopped
 
-    volumes:
-      - perfex-app-config:/var/www/html/application/config/app-config.php
+
 
     environment:
       DB_HOST: db
@@ -61,8 +60,7 @@ services:
 volumes:
   db_data:
 
-  perfex-app-config:
-    external: true
+
 
 networks:
   perfex-net:

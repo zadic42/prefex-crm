@@ -17,7 +17,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 * environments.
 *
 */
-define('APP_BASE_URL', '[base_url]');
+define('APP_BASE_URL', getenv('APP_BASE_URL') ?: 'https://crm.supportzone.ae/');
 
 /*
 * --------------------------------------------------------------------------
@@ -32,28 +32,28 @@ define('APP_BASE_URL', '[base_url]');
 *
 * Auto added on install
 */
-define('APP_ENC_KEY', '[encryption_key]');
+define('APP_ENC_KEY', getenv('APP_ENC_KEY') ?: 'some_default_encryption_key_123');
 
 /**
  * Database Credentials
  * The hostname of your database server
  */
-define('APP_DB_HOSTNAME', '[db_hostname]');
+define('APP_DB_HOSTNAME', getenv('DB_HOST') ?: 'db');
 
 /**
  * The username used to connect to the database
  */
-define('APP_DB_USERNAME', '[db_username]');
+define('APP_DB_USERNAME', getenv('DB_USER') ?: 'perfex');
 
 /**
  * The password used to connect to the database
  */
-define('APP_DB_PASSWORD', '[db_password]');
+define('APP_DB_PASSWORD', getenv('DB_PASS') ?: '');
 
 /**
  * The name of the database you want to connect to
  */
-define('APP_DB_NAME', '[db_name]');
+define('APP_DB_NAME', getenv('DB_NAME') ?: 'perfex_db');
 
 /**
  * @since  2.3.0

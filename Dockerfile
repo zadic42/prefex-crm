@@ -38,6 +38,9 @@ WORKDIR /var/www/html
 # Copy the application
 COPY . /var/www/html/
 
+# Create app config
+RUN cp /var/www/html/application/config/app-config-sample.php /var/www/html/application/config/app-config.php
+
 # Permissions
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 755 /var/www/html
