@@ -1,33 +1,39 @@
-version: '3.8'
+version: "3.8"
 
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
+
     restart: unless-stopped
-    volumes:
-      - .:/var/www/html
+
     environment:
-      - DB_HOST=db
-      - DB_USER=perfex
-      - DB_PASS=${DB_PASS}
-      - DB_NAME=perfex_db
+      DB_HOST: db
+      DB_USER: perfex
+      DB_PASS: ${DB_PASS}
+      DB_NAME: perfex_db
+
     depends_on:
       - db
+
     networks:
       - perfex-network
 
   db:
     image: mariadb:10.11
+
     restart: unless-stopped
+
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=perfex_db
-      - MYSQL_USER=perfex
-      - MYSQL_PASSWORD=${DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: perfex_db
+      MYSQL_USER: perfex
+      MYSQL_PASSWORD: ${DB_PASS}
+
     volumes:
       - db_data:/var/lib/mysql
+
     networks:
       - perfex-network
 
