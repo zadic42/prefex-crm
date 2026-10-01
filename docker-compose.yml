@@ -17,9 +17,6 @@ services:
     depends_on:
       - db
 
-    networks:
-      - perfex-network
-
   db:
     image: mariadb:10.11
 
@@ -34,12 +31,5 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
-    networks:
-      - perfex-network
-
 volumes:
   db_data:
-
-networks:
-  perfex-network:
-    driver: bridge
