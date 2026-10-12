@@ -5,27 +5,28 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-
     restart: unless-stopped
-
-
-
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       DB_HOST: db
-      DB_USER: perfex
-      DB_PASS: ${DB_PASS}
-      DB_NAME: perfex_db
-      APP_BASE_URL: https://crm.supportzone.ae/
+      DB_USER: ${MYSQL_USER:-perfex}
+      DB_PASS: ${MYSQL_PASSWORD:-${DB_PASS}}
+      DB_NAME: ${MYSQL_DATABASE:-perfex_db}
+      APP_BASE_URL: ${APP_BASE_URL:-https://crm.supportzone.ae/}
       APP_ENC_KEY: ${APP_ENC_KEY}
-
-    depends_on:
-      - db
-
+    volumes:
+      # Persist config and runtime directories across container restarts & redeployments
+      - app_config:/var/www/html/application/config
+      - app_uploads:/var/www/html/uploads
+      - app_temp:/var/www/html/temp
+      - app_logs:/var/www/html/application/logs
+      - app_cache:/var/www/html/application/cache
     networks:
       - perfex-net
       - dokploy-network
       - default
-
     labels:
       - traefik.http.routers.perfex-crm-fi0xyz-2-web.rule=Host(`crm.supportzone.ae`)
       - traefik.http.routers.perfex-crm-fi0xyz-2-web.entrypoints=web
@@ -44,25 +45,30 @@ services:
 
   db:
     image: mariadb:10.11
-
     restart: unless-stopped
-
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: perfex_db
-      MYSQL_USER: perfex
-      MYSQL_PASSWORD: ${DB_PASS}
-
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-perfex_db}
+      MYSQL_USER: ${MYSQL_USER:-perfex}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-${DB_PASS}}
     volumes:
       - db_data:/var/lib/mysql
-
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     networks:
       - perfex-net
 
 volumes:
+  app_config:
+  app_uploads:
+  app_temp:
+  app_logs:
+  app_cache:
   db_data:
-
-
 
 networks:
   perfex-net:
