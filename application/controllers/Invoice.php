@@ -19,6 +19,14 @@ class Invoice extends ClientsController
         if ($this->input->post('invoicepdf')) {
             try {
                 $pdf = invoice_pdf($invoice);
+
+                $invoice_number = format_invoice_number($invoice->id);
+                $companyname    = get_option('invoice_company_name');
+                if ($companyname != '') {
+                    $invoice_number .= '-' . mb_strtoupper(slug_it($companyname), 'UTF-8');
+                }
+                $pdf->Output(mb_strtoupper(slug_it($invoice_number), 'UTF-8') . '.pdf', 'D');
+                die();
             } catch (\Throwable $e) {
                 log_message('error', 'Invoice PDF generation error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
                 $message = $e->getMessage();
@@ -32,14 +40,6 @@ class Invoice extends ClientsController
                 echo '</div>';
                 die;
             }
-
-            $invoice_number = format_invoice_number($invoice->id);
-            $companyname    = get_option('invoice_company_name');
-            if ($companyname != '') {
-                $invoice_number .= '-' . mb_strtoupper(slug_it($companyname), 'UTF-8');
-            }
-            $pdf->Output(mb_strtoupper(slug_it($invoice_number), 'UTF-8') . '.pdf', 'D');
-            die();
         }
 
         // Handle $_POST payment
