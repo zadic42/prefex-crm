@@ -106,8 +106,10 @@ trait PDF_Signature
             // $this->ln(13);
 
             if ($signatureImage != '' && $signatureExists) {
+                $companySignatureSize = hooks()->apply_filters('company_pdf_signature_size', 120);
+                $widthAttr = ($companySignatureSize > 0) ? ' width="' . (int)$companySignatureSize . 'px"' : '';
                 $imageData = base64_encode(file_get_contents($signaturePath));
-                $blankSignatureLine .= str_repeat('<br />', $lineBreaksBefore) . '<img src="@' . $imageData . '" />';
+                $blankSignatureLine .= str_repeat('<br />', $lineBreaksBefore) . '<img' . $widthAttr . ' src="@' . $imageData . '" />';
             }
 
             return $blankSignatureLine;
