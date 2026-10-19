@@ -19,8 +19,17 @@ class Invoice extends ClientsController
         if ($this->input->post('invoicepdf')) {
             try {
                 $pdf = invoice_pdf($invoice);
-            } catch (Exception $e) {
-                echo $e->getMessage();
+            } catch (\Throwable $e) {
+                log_message('error', 'Invoice PDF generation error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+                $message = $e->getMessage();
+                echo '<div style="font-family: sans-serif; padding: 20px; line-height: 1.6;">';
+                echo '<h3>Invoice PDF Generation Error</h3>';
+                echo '<p><b>Error message:</b> ' . htmlspecialchars($message) . '</p>';
+                echo '<p><small><b>File:</b> ' . htmlspecialchars($e->getFile()) . ':' . $e->getLine() . '</small></p>';
+                if (strpos($message, 'Unable to get the size of the image') !== false || strpos($message, 'TCPDF ERROR: [Image]') !== false) {
+                    show_pdf_unable_to_get_image_size_error();
+                }
+                echo '</div>';
                 die;
             }
 
@@ -51,9 +60,15 @@ class Invoice extends ClientsController
             // Confirm that the payment is related to the invoice.
             if ($payment->invoiceid == $id) {
                 $payment->invoice_data = $this->invoices_model->get($payment->invoiceid);
-                $paymentpdf            = payment_pdf($payment);
-                $paymentpdf->Output(mb_strtoupper(slug_it(_l('payment') . '-' . $payment->paymentid), 'UTF-8') . '.pdf', 'D');
-                die;
+                try {
+                    $paymentpdf = payment_pdf($payment);
+                    $paymentpdf->Output(mb_strtoupper(slug_it(_l('payment') . '-' . $payment->paymentid), 'UTF-8') . '.pdf', 'D');
+                    die;
+                } catch (\Throwable $e) {
+                    log_message('error', 'Payment PDF generation error: ' . $e->getMessage());
+                    echo '<p><b>Payment PDF Error:</b> ' . htmlspecialchars($e->getMessage()) . '</p>';
+                    die;
+                }
             }
         }
 
